@@ -1,0 +1,39 @@
+name: Jobs.af Online Check
+
+on:
+  workflow_dispatch:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Fetch headers + HTML (like a scraper would)
+        run: |
+          URL='https://jobs.af/jobs?search=&category=IT%20-%20Hardware&category=IT%20-%20Software&workType=Full%20Time&page=1'
+          echo "Testing: $URL"
+
+          curl -sS -D headers.txt -o page.html -L \
+            -H 'User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120 Safari/537.36' \
+            "$URL" || true
+
+          echo "=== STATUS/HEADERS (top) ==="
+          head -n 40 headers.txt || true
+          echo
+          echo "=== HTML (first 60 lines) ==="
+          head -n 60 page.html || true
+          echo
+          echo "=== BLOCK DETECT ==="
+          if grep -qiE 'cloudflare|cf-ray|cf-challenge|just a moment|attention required|verify you are human' headers.txt page.html; then
+            echo "BLOCK/CHALLENGE DETECTED"
+            exit 2
+          else
+            echo "No obvious challenge detected"
+          fi
+
+      - name: Upload artifacts (headers + html)
+        uses: actions/upload-artifact@v4
+        with:
+          name: jobsaf-check
+          path: |
+            headers.txt
+            page.html
