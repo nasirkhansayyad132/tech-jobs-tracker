@@ -1,0 +1,6 @@
+# Jobs.af Tracker requirements (Termux/mobile)
+# This requirements file is intended for Termux on Android phones.
+playwright
+beautifulsoup4
+python-dateutil
+tqdm
