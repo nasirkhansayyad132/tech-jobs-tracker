@@ -1,0 +1,363 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Job Details - Jobs.af Tracker</title>
+    <style>
+      :root {
+        --bg: #f7f1e6;
+        --bg-2: #e6f2eb;
+        --ink: #1b1b1f;
+        --muted: #5f666d;
+        --accent: #d97706;
+        --accent-2: #0f766e;
+        --card: #ffffff;
+        --border: #e2ddd0;
+        --chip-new: #2563eb;
+        --chip-soon: #dc2626;
+        --chip-today: #b91c1c;
+        --chip-info: #0f766e;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        font-family: "Noto Sans", "Liberation Sans", sans-serif;
+        color: var(--ink);
+        background: radial-gradient(circle at 20% 20%, #fff7e8 0, transparent 40%),
+          radial-gradient(circle at 90% 10%, #e3f1ff 0, transparent 35%),
+          linear-gradient(135deg, var(--bg), var(--bg-2));
+        min-height: 100vh;
+      }
+
+      .wrap {
+        max-width: 860px;
+        margin: 0 auto;
+        padding: 24px 16px 48px;
+        display: grid;
+        gap: 18px;
+      }
+
+      .back {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        color: var(--accent-2);
+        text-decoration: none;
+        font-weight: 600;
+      }
+
+      .hero {
+        display: grid;
+        gap: 10px;
+        padding: 18px;
+        border-radius: 18px;
+        border: 1px solid var(--border);
+        background: rgba(255, 255, 255, 0.9);
+        box-shadow: 0 12px 28px rgba(17, 24, 39, 0.08);
+      }
+
+      .hero h1 {
+        margin: 0;
+        font-size: 24px;
+      }
+
+      .hero .company {
+        color: var(--muted);
+      }
+
+      .badges {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+
+      .badge {
+        font-size: 12px;
+        padding: 4px 8px;
+        border-radius: 999px;
+        background: #f3f4f6;
+        color: #111827;
+        border: 1px solid #e5e7eb;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+
+      .badge.new {
+        background: rgba(37, 99, 235, 0.15);
+        color: #1d4ed8;
+        border-color: rgba(37, 99, 235, 0.4);
+      }
+
+      .badge.soon {
+        background: rgba(220, 38, 38, 0.12);
+        color: var(--chip-soon);
+        border-color: rgba(220, 38, 38, 0.3);
+      }
+
+      .badge.today {
+        background: rgba(185, 28, 28, 0.15);
+        color: var(--chip-today);
+        border-color: rgba(185, 28, 28, 0.35);
+      }
+
+      .badge.info {
+        background: rgba(15, 118, 110, 0.12);
+        color: var(--chip-info);
+        border-color: rgba(15, 118, 110, 0.3);
+      }
+
+      .panel {
+        padding: 16px;
+        border-radius: 16px;
+        border: 1px solid var(--border);
+        background: var(--card);
+        box-shadow: 0 10px 22px rgba(17, 24, 39, 0.06);
+      }
+
+      .panel h2 {
+        margin-top: 0;
+      }
+
+      .rows {
+        display: grid;
+        gap: 10px;
+      }
+
+      .row {
+        display: grid;
+        gap: 6px;
+      }
+
+      .label {
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        color: var(--muted);
+      }
+
+      .value a {
+        color: var(--accent-2);
+        text-decoration: none;
+      }
+
+      .text-block {
+        white-space: pre-wrap;
+        line-height: 1.5;
+      }
+
+      .contacts {
+        display: grid;
+        gap: 16px;
+      }
+
+      .contact-list {
+        display: grid;
+        gap: 6px;
+      }
+
+      .contact-list a {
+        color: var(--accent-2);
+        text-decoration: none;
+      }
+
+      @media (min-width: 720px) {
+        .rows {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+        .contacts {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="wrap">
+      <a class="back" href="index.html">Back to list</a>
+
+      <section class="hero">
+        <h1 id="title">Loading...</h1>
+        <div class="company" id="company"></div>
+        <div class="badges" id="badges"></div>
+      </section>
+
+      <section class="panel">
+        <div class="rows">
+          <div class="row">
+            <div class="label">Location</div>
+            <div class="value" id="location"></div>
+          </div>
+          <div class="row">
+            <div class="label">Closing date</div>
+            <div class="value" id="closingDate"></div>
+          </div>
+          <div class="row">
+            <div class="label">Apply method</div>
+            <div class="value" id="applyMethod"></div>
+          </div>
+          <div class="row" id="applyRow">
+            <div class="label">Apply link</div>
+            <div class="value"><a id="applyLink" href="#"></a></div>
+          </div>
+          <div class="row" id="sourceRow">
+            <div class="label">Source</div>
+            <div class="value"><a id="sourceLink" href="#"></a></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel">
+        <h2>Description</h2>
+        <div id="description" class="text-block"></div>
+      </section>
+
+      <section class="panel">
+        <h2>Details</h2>
+        <div id="details" class="text-block"></div>
+      </section>
+
+      <section class="panel">
+        <h2>Contacts</h2>
+        <div class="contacts">
+          <div>
+            <div class="label">Emails</div>
+            <div id="emails" class="contact-list"></div>
+          </div>
+          <div>
+            <div class="label">Phones</div>
+            <div id="phones" class="contact-list"></div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <script>
+      const DATA_URL = "/data/jobs_full_open.json";
+      const params = new URLSearchParams(window.location.search);
+      const jobUrl = params.get("u");
+
+      const titleEl = document.getElementById("title");
+      const companyEl = document.getElementById("company");
+      const badgesEl = document.getElementById("badges");
+      const locationEl = document.getElementById("location");
+      const closingDateEl = document.getElementById("closingDate");
+      const applyMethodEl = document.getElementById("applyMethod");
+      const applyRow = document.getElementById("applyRow");
+      const applyLink = document.getElementById("applyLink");
+      const sourceLink = document.getElementById("sourceLink");
+      const descriptionEl = document.getElementById("description");
+      const detailsEl = document.getElementById("details");
+      const emailsEl = document.getElementById("emails");
+      const phonesEl = document.getElementById("phones");
+
+      const msPerDay = 24 * 60 * 60 * 1000;
+
+      function startOfToday() {
+        const d = new Date();
+        d.setHours(0, 0, 0, 0);
+        return d;
+      }
+
+      function parseDate(value) {
+        if (!value) return null;
+        const d = new Date(value);
+        if (Number.isNaN(d.getTime())) return null;
+        d.setHours(0, 0, 0, 0);
+        return d;
+      }
+
+      function daysLeft(job) {
+        const dateValue = job.closing_date || job.closing_date_raw;
+        const d = parseDate(dateValue);
+        if (!d) return null;
+        return Math.round((d - startOfToday()) / msPerDay);
+      }
+
+      function addBadge(text, className) {
+        const badge = document.createElement("span");
+        badge.className = `badge ${className}`;
+        badge.textContent = text;
+        badgesEl.appendChild(badge);
+      }
+
+      function formatApply(method) {
+        if (method === "apply_url") return "Apply link";
+        if (method === "email") return "Email";
+        return "Unknown";
+      }
+
+      function renderContacts(container, list, scheme) {
+        container.innerHTML = "";
+        if (!list || !list.length) {
+          const empty = document.createElement("div");
+          empty.textContent = "None found";
+          container.appendChild(empty);
+          return;
+        }
+        list.forEach((item) => {
+          const link = document.createElement("a");
+          link.href = `${scheme}:${item}`;
+          link.textContent = item;
+          container.appendChild(link);
+        });
+      }
+
+      async function loadJob() {
+        if (!jobUrl) {
+          titleEl.textContent = "Missing job link";
+          return;
+        }
+        try {
+          const res = await fetch(DATA_URL, { cache: "no-store" });
+          if (!res.ok) throw new Error("Missing data");
+          const data = await res.json();
+          const job = Array.isArray(data)
+            ? data.find((item) => item.url === jobUrl)
+            : null;
+          if (!job) {
+            titleEl.textContent = "Job not found";
+            return;
+          }
+
+          titleEl.textContent = job.title || "Untitled";
+          companyEl.textContent = job.company || "Unknown company";
+          locationEl.textContent = job.location || "Location unknown";
+          closingDateEl.textContent = job.closing_date || job.closing_date_raw || "Unknown";
+          applyMethodEl.textContent = formatApply(job.apply_method);
+
+          badgesEl.innerHTML = "";
+          const days = daysLeft(job);
+          if (days === 0) addBadge("Closing today", "today");
+          if (days === 1 || days === 2)
+            addBadge(`${days} day${days === 1 ? "" : "s"} left`, "soon");
+          if (days !== null && days > 2) addBadge(`${days} days left`, "info");
+          if (job.is_new) addBadge("New", "new");
+
+          descriptionEl.textContent = job.description || "";
+          detailsEl.textContent = job.details || "";
+
+          if (job.apply_url) {
+            applyLink.href = job.apply_url;
+            applyLink.textContent = job.apply_url;
+          } else {
+            applyRow.style.display = "none";
+          }
+
+          sourceLink.href = job.url;
+          sourceLink.textContent = job.url;
+
+          renderContacts(emailsEl, job.emails || [], "mailto");
+          renderContacts(phonesEl, job.phones || [], "tel");
+        } catch (err) {
+          titleEl.textContent = "Failed to load job";
+        }
+      }
+
+      loadJob();
+    </script>
+  </body>
+</html>
